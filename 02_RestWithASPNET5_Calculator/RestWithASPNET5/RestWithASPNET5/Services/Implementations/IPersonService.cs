@@ -6,10 +6,10 @@ namespace RestWithASPNET5.Services.Implementations
     public interface IPersonService
     {
 
-        Person Create(Person person);
-        Person FindById(long id);
-        List<Person> FindAll();
-        Person Update(Person person);
-        void Delete(long id);
+        Person Create(List<Person> people, Person person);
+        Person FindById(List<Person> people, long id);
+        List<Person> FindAll(List<Person> people);
+        Person Update(List<Person> people, Person person);
+        void Delete(List<Person> people, long id);
     }
 }

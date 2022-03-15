@@ -9,42 +9,61 @@ namespace RestWithASPNET5.Services.Implementations
     {
         private volatile int count;
 
-        public Person Create(Person person)
+        public Person Create(List<Person> people, Person person)
         {
+            int novoId = 1;
+            for (int i = 0; i < people.Count; i++)
+            {
+                novoId++;
+            }
+            person.Id = novoId;
             return person;
         }
 
-        public void Delete(long id)
+        public void Delete(List<Person> people, long id)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < people.Count; i++)
+            {
+                if (people[i].Id == id)
+                {
+                    people.RemoveAt(i);
+                }
+            }
         }
 
-        public List<Person> FindAll()
+        public List<Person> FindAll(List<Person> people)
         {
-            List<Person> people = new List<Person>();
-            for (int i = 0; i < 8; i++)
-            {
-                Person person = MockPerson(i);
-                people.Add(person);
-            }
             return people;
         }
 
-        public Person FindById(long id)
+        public Person FindById(List<Person> people, long id)
         {
-            return new Person
+            for (int i=0; i<people.Count; i++)
             {
-                Id = 1,
-                FirstName = "Alexandre",
-                LastName = "Lopes",
-                Address = "Rua Adão Ordakowski, 120 - Curitiba (PR), Brasil",
-                Gender = "Male"
-            };
+                if (people[i].Id == id)
+                {
+                    return people[i];
+                }
+            }
+            return null;
         }
 
-        public Person Update(Person person)
+        public Person Update(List<Person> people, Person person)
         {
-            return person;
+            for (int i = 0; i < people.Count; i++)
+            {
+                if (people[i].Id == person.Id)
+                {
+                    if (person.FirstName != null) { people[i].FirstName = person.FirstName; }
+                    if (person.LastName != null) { people[i].LastName = person.LastName; }
+                    if (person.Address != null) { people[i].Address = person.Address; }
+                    if (person.Gender != null) { people[i].Gender = person.Gender; }
+
+                    return people[i];
+                }
+                
+            }
+            return null;
         }
         private Person MockPerson(int i)
         {

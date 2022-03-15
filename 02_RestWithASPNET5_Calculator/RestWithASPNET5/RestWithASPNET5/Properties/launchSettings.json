@@ -20,7 +20,7 @@
     "RestWithASPNET5": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "calculator/sum/1/1",
+      "launchUrl": "api/person",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
