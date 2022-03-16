@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using RestWithASPNET5.Repository.Implementations;
 using Serilog;
+using RestWithASPNET5.Repository.Generic;
 
 namespace RestWithASPNET5
 {
@@ -43,9 +44,9 @@ namespace RestWithASPNET5
 
             //Dependency Injection
             services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
-            services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
             services.AddScoped<IBookBusiness, BookBusinessImplementation>();
-            services.AddScoped<IBookRepository, BookRepositoryImplementation>();
+            // adicionando o generic repository vamos poder retirar o repository de Book
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

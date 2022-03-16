@@ -8,6 +8,8 @@ using System.Linq;
 
 namespace RestWithASPNET5.Repository.Generic
 {
+    // Essa classe genérica de repositório vai trabalhar implementar a interface IRepository que é genérica
+    // A classe genérica vai extender da classe BaseEntity que só tem um Id como atributo
     public class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
         private MySQLContext _context;

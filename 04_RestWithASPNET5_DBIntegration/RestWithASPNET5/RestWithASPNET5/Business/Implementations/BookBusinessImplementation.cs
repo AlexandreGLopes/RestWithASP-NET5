@@ -1,20 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using RestWithASPNET5.Model;
-using RestWithASPNET5.Model.Context;
+﻿using RestWithASPNET5.Model;
 using RestWithASPNET5.Repository.Implementations;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace RestWithASPNET5.Business.Implementations
 {
     public class BookBusinessImplementation : IBookBusiness
     {
         //Não vai acessar diretamente o MySQLContext, quem vai fazer isso é Repository
-        private readonly IBookRepository _repository;
+        private readonly IRepository<Book> _repository;
 
-        public BookBusinessImplementation(IBookRepository repository)
+        public BookBusinessImplementation(IRepository<Book> repository)
         {
             _repository = repository;
         }

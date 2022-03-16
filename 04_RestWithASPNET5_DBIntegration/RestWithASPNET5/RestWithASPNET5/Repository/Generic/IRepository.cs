@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace RestWithASPNET5.Repository.Implementations
 {
+    // A classe genérica vai extender da classe BaseEntity que só tem um Id como atributo
     public interface IRepository<T> where T : BaseEntity
     {
         T Create(T item);
