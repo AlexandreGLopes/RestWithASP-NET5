@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 namespace RestWithASPNET5.Repository.Implementations
 {
-    public interface IPersonRepository
+    public interface IBookRepository
     {
-        Person Create(Person person);
-        Person FindById(long id);
-        List<Person> FindAll();
-        Person Update(Person person);
+
+        Book Create(Book book);
+        Book FindById(long id);
+        List<Book> FindAll();
+        Book Update(Book book);
         void Delete(long id);
         bool Exists(long id);
     }

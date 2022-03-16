@@ -14,6 +14,9 @@ namespace RestWithASPNET5.Model.Context
 
         }
 
+        // Quando criamos a Classe precisamos adicioná-la ao contexto
         public DbSet<Person> Persons { get; set; }
+
+        public DbSet<Book> Books { get; set; }
     }
 }
