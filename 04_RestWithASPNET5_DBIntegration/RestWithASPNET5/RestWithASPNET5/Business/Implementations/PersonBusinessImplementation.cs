@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using RestWithASPNET5.Data.Converter.Implementations;
+using RestWithASPNET5.Data.VO;
 using RestWithASPNET5.Model;
 using RestWithASPNET5.Model.Context;
 using RestWithASPNET5.Repository.Implementations;
@@ -13,25 +15,38 @@ namespace RestWithASPNET5.Business.Implementations
     {
         //Não vai acessar diretamente o MySQLContext, quem vai fazer isso é Repository
         private readonly IRepository<Person> _repository;
+        private readonly PersonConverter _converter;
 
         public PersonBusinessImplementation(IRepository<Person> repository)
         {
             _repository = repository;
+            _converter = new PersonConverter();
         }
 
-        public List<Person> FindAll()
+        public List<PersonVO> FindAll()
         {
-            return _repository.FindAll();
+            // Não vamos retornar um objeto igual ao que está no banco de dados. O que vamos fazer é
+            // buscar o objeto ou a lista de objetos e convertê-los para um VO que será retornado em resposta
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public Person FindById(long id)
+        public PersonVO FindById(long id)
         {
-            return _repository.FindById(id);
+            // Não vamos retornar um objeto igual ao que está no banco de dados. O que vamos fazer é
+            // buscar o objeto ou a lista de objetos e convertê-los para um VO que será retornado em resposta
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public Person Create(Person person)
+        public PersonVO Create(PersonVO person)
         {
-            return _repository.Create(person);
+            // quando o objeto chega ele é um VO e não dá pra persistir ele diretamente na base de dados
+            // Então precisamos parsear ele para entidade
+            var personEntity = _converter.Parse(person);
+            // como entidade vamos poder persistir ele no banco e o resultado dessa persistência será colocado dentro de personEntity
+            // Ou seja, gerou um id auto incremental, etc.
+            personEntity = _repository.Create(personEntity);
+            // Depois convertemos a entidade para VO novamente e devolvemos a resposta
+            return _converter.Parse(personEntity);
         }
 
         public void Delete(long id)
@@ -39,9 +54,16 @@ namespace RestWithASPNET5.Business.Implementations
             _repository.Delete(id);
         }
 
-        public Person Update(Person person)
+        public PersonVO Update(PersonVO person)
         {
-            return _repository.Update(person);
+            // quando o objeto chega ele é um VO e não dá pra persistir ele diretamente na base de dados
+            // Então precisamos parsear ele para entidade
+            var personEntity = _converter.Parse(person);
+            // como entidade vamos poder persistir ele no banco e o resultado dessa persistência será colocado dentro de personEntity
+            // Ou seja, gerou um id auto incremental, etc.
+            personEntity = _repository.Update(personEntity);
+            // Depois convertemos a entidade para VO novamente e devolvemos a resposta
+            return _converter.Parse(personEntity);
         }
     }
 }
