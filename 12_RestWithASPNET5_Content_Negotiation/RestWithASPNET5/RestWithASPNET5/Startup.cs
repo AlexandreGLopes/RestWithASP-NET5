@@ -14,6 +14,8 @@ using RestWithASPNET5.Repository.Generic;
 using Microsoft.Net.Http.Headers;
 using RestWithASPNET5.Hypermedia.Filters;
 using RestWithASPNET5.Hypermedia.Enricher;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace RestWithASPNET5
 {
@@ -31,6 +33,15 @@ namespace RestWithASPNET5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Habilitando Cors para qualquer outro dominio poder acessar a API
+            services.AddCors(options => options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            }));
+            //Ainda tem mais um pouco no método Configure abaixo
+            //Final do Habilitando Cors para qualquer outro dominio poder acessar a API
 
             services.AddControllers();
 
@@ -61,6 +72,22 @@ namespace RestWithASPNET5
             // Versioning API
             services.AddApiVersioning();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "REST API's from 0 to Azure with ASP.NET Core 5 and Docker",
+                        Version = "v1",
+                        Description = "API RESTful developed in course 'REST API's from 0 to Azure with ASP.NET Core 5 and Docker'",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Alexandre Lopes",
+                            Url = new Uri("https://github.com/AlexandreGLopes")
+                        }
+                    });
+            });
+
             //Dependency Injection
             services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
             services.AddScoped<IBookBusiness, BookBusinessImplementation>();
@@ -79,6 +106,23 @@ namespace RestWithASPNET5
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            //Habilitando Cors para qualquer outro dominio poder acessar a API
+            //O detalhe é que app.UseCors(); tem que vir obrigatóriamente depois de .UseHttpsRedirection e .UseRouting e antes de .UseEndpoints
+            app.UseCors();
+
+            // Início da Configuração do Swagger
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json",
+                    "REST API's from 0 to Azure with ASP.NET Core 5 and Docker - v1");
+            });
+
+            var option = new RewriteOptions();
+            option.AddRedirect("^$", "swagger");
+            app.UseRewriter(option);
+            // Final da Configuração do Swagger
 
             app.UseAuthorization();
 
