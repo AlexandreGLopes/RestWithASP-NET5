@@ -10,7 +10,7 @@ namespace RestWithASPNET5.Hypermedia.Filters
     public class HyperMediaFilter : ResultFilterAttribute
     {
         private readonly HyperMediaFilterOptions _hyperMediaFilterOptions;
-
+        
         public HyperMediaFilter(HyperMediaFilterOptions hyperMediaFilterOptions)
         {
             _hyperMediaFilterOptions = hyperMediaFilterOptions;
