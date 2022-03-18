@@ -3,6 +3,7 @@ using RestWithASPNET5.Data.Converter.Implementations;
 using RestWithASPNET5.Data.VO;
 using RestWithASPNET5.Model;
 using RestWithASPNET5.Model.Context;
+using RestWithASPNET5.Repository;
 using RestWithASPNET5.Repository.Implementations;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace RestWithASPNET5.Business.Implementations
     public class PersonBusinessImplementation : IPersonBusiness
     {
         //Não vai acessar diretamente o MySQLContext, quem vai fazer isso é Repository
-        private readonly IRepository<Person> _repository;
+        // Estávamos usando a IRepository que é o repositório genérico
+        // Mas após a implementação de IPersonRepository vamos passar a usá-lo pois ele extende de IRepository
+        private readonly IPersonRepository _repository;
         private readonly PersonConverter _converter;
 
-        public PersonBusinessImplementation(IRepository<Person> repository)
+        public PersonBusinessImplementation(IPersonRepository repository)
         {
             _repository = repository;
             _converter = new PersonConverter();
@@ -47,6 +50,12 @@ namespace RestWithASPNET5.Business.Implementations
             personEntity = _repository.Create(personEntity);
             // Depois convertemos a entidade para VO novamente e devolvemos a resposta
             return _converter.Parse(personEntity);
+        }
+
+        public PersonVO Disable(long id)
+        {
+            var personEntity = _repository.Disable(id);
+            return _converter.Parse(personEntity); 
         }
 
         public void Delete(long id)

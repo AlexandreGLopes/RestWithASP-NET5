@@ -146,6 +146,8 @@ namespace RestWithASPNET5
 
             //Adicionando o repositório do User
             services.AddScoped<IUserRepository, UserRepositoryImplementation>();
+            //Adicionando o repositório do Person
+            services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
             // adicionando o generic repository vamos poder retirar o repository de Book
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }

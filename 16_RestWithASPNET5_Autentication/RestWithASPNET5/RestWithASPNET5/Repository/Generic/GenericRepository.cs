@@ -12,7 +12,9 @@ namespace RestWithASPNET5.Repository.Generic
     // A classe genérica vai extender da classe BaseEntity que só tem um Id como atributo
     public class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
-        private MySQLContext _context;
+        // A partir da implementação de IPersonRepository que extende do genérico IRepository
+        // Trocamos o contexto abaixo de private para protected, porque ele vai precisar ser visualizado e manipulado externamente
+        protected MySQLContext _context;
 
         private DbSet<T> dataset;
         public GenericRepository(MySQLContext context)
