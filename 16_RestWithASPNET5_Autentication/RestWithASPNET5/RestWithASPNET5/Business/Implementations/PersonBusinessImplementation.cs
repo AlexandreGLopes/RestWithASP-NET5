@@ -40,6 +40,11 @@ namespace RestWithASPNET5.Business.Implementations
             return _converter.Parse(_repository.FindById(id));
         }
 
+        public List<PersonVO> FindByName(string firstName, string secondName)
+        {
+            return _converter.Parse(_repository.FindByName(firstName, secondName));
+        }
+
         public PersonVO Create(PersonVO person)
         {
             // quando o objeto chega ele é um VO e não dá pra persistir ele diretamente na base de dados

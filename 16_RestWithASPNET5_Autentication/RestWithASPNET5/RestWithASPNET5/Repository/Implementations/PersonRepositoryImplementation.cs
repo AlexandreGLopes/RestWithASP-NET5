@@ -37,5 +37,26 @@ namespace RestWithASPNET5.Repository.Implementations
             }
             return user;
         }
+
+        public List<Person> FindByName(string firstName, string secondName)
+        {
+            //quando os dois não forem nulos ou em branco
+            if (!string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName))
+            {
+                return _context.Persons.Where(p => p.FirstName.Contains(firstName)
+                && p.LastName.Contains(secondName)).ToList();
+            }
+            //quando só o secondName não for nulo ou em branco
+            else if (string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(secondName))
+            {
+                return _context.Persons.Where(p => p.LastName.Contains(secondName)).ToList();
+            }
+            //quando só o firstName não for nulo ou em branco
+            else if (!string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(secondName))
+            {
+                return _context.Persons.Where(p => p.FirstName.Contains(firstName)).ToList();
+            }
+            return null;
+        }
     }
 }

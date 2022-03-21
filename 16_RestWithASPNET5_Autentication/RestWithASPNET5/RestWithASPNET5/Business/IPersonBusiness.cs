@@ -8,6 +8,7 @@ namespace RestWithASPNET5.Business.Implementations
 
         PersonVO Create(PersonVO person);
         PersonVO FindById(long id);
+        List<PersonVO> FindByName(string firstName, string secondName);
         List<PersonVO> FindAll();
         PersonVO Update(PersonVO person);
         PersonVO Disable(long id);
