@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
 using RestWithASPNET5.Hypermedia.Abstract;
+using RestWithASPNET5.Hypermedia.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,7 +18,9 @@ namespace RestWithASPNET5.Hypermedia
         }
         public virtual bool CanEnrich(Type contentType)
         {
-            return contentType == typeof(T) || contentType == typeof(List<T>);
+            //A partir da adição do PagedSearch vamos adicionar o suporte a um VO,
+            //porque antes ele só suportava uma entidade do tipo T e uma lista do tipo T
+            return contentType == typeof(T) || contentType == typeof(List<T>) || contentType == typeof(PagedSearchVO<T>);
         }
 
         protected abstract Task EnrichModel(T content, IUrlHelper urlHelper);
