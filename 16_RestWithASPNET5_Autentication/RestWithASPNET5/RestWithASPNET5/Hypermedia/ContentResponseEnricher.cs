@@ -6,6 +6,7 @@ using RestWithASPNET5.Hypermedia.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestWithASPNET5.Hypermedia
@@ -46,6 +47,14 @@ namespace RestWithASPNET5.Hypermedia
                 {
                     ConcurrentBag<T> bag = new ConcurrentBag<T>(collection);
                     Parallel.ForEach(bag, (element) =>
+                    {
+                        EnrichModel(element, urlHelper);
+                    });
+                }
+                else if (okObjectResult.Value is PagedSearchVO<T> pagedSearch)
+                {
+                    // Tratando as listas dentro do pagedsearchVO e assim temos suporte no pagedSearch também
+                    Parallel.ForEach(pagedSearch.List.ToList(), (element) =>
                     {
                         EnrichModel(element, urlHelper);
                     });

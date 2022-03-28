@@ -25,15 +25,23 @@ namespace RestWithASPNET5.Controllers
             _personBusiness = personBusiness;
         }
 
-        [HttpGet]
+        //Nós vamos começar a paginar. Antes funcionava usando um FindAll() mas sem paginação
+        //Entretanto a tabela vai crescer e vai ficar pesado para o banco trazer todos os dados de uma vez só
+        //vamos salvar recursos paginando
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
         [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get()
+        public IActionResult Get(
+            [FromQuery] string name,
+            string sortDirection,
+            int pageSize,
+            int page)
         {
-            return Ok(_personBusiness.FindAll());
+            //Trocamos o FindAll() abaixo por um FindWithPagedSearch
+            return Ok(_personBusiness.FindWithPagedSearch(name, sortDirection, pageSize, page));
         }
 
         [HttpGet("{id}")]

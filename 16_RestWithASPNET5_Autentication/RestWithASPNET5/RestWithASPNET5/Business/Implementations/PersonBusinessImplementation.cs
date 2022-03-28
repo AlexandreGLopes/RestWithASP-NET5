@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using RestWithASPNET5.Data.Converter.Implementations;
 using RestWithASPNET5.Data.VO;
+using RestWithASPNET5.Hypermedia.Utils;
 using RestWithASPNET5.Model;
 using RestWithASPNET5.Model.Context;
 using RestWithASPNET5.Repository;
@@ -33,6 +34,45 @@ namespace RestWithASPNET5.Business.Implementations
             return _converter.Parse(_repository.FindAll());
         }
 
+        //Nós vamos começar a paginar. Antes funcionava como um getAll mas sem paginação
+        //Entretanto a tabela vai crescer e vai ficar pesado para o banco trazer todos os dados de uma vez só
+        //vamos salvar recursos paginando
+        public PagedSearchVO<PersonVO> FindWithPagedSearch(string name, string SortDirection, int pagesize, int page)
+        {
+            var sort = (!string.IsNullOrWhiteSpace(SortDirection)) && !SortDirection.Equals("desc") ? "asc" : "desc";
+            var size = (pagesize < 1) ? 10 : pagesize;
+            var offset = page > 0 ? (page - 1) * size : 0;
+
+            //este where 1 = 1 é para que quando as querys não gerarem nenhuma condição where não quebrar nosso sql
+            string query = @"select * from person p where 1 = 1 ";
+            // geração dinâmica da query
+            if (!string.IsNullOrWhiteSpace(name)) query = query + $"and p.first_name like '%{name}%' ";
+            query += $" order by p.first_name {sort} limit {size} offset {offset}";
+
+            // A query sem geração dinâmica era assim:
+            //"select * from
+            //    person p
+            //where 1 = 1
+            //    and p.first_name like '%LEO%'
+            //order by
+            //    p.first_name asc limit 10 offset 1";
+
+            string countQuery = @"select count(*) from person p where 1 = 1 ";
+            if (!string.IsNullOrWhiteSpace(name)) countQuery = countQuery + $"and p.first_name like '%{name}%' ";
+
+            var persons = _repository.FindWithPagedSearch(query);
+            int totalResults = _repository.GetCount(countQuery);
+
+            return new PagedSearchVO<PersonVO>
+            {
+                CurrentPage = page,
+                List = _converter.Parse(persons),
+                PageSize = size,
+                SortDirections = sort,
+                TotalResults = totalResults
+            };
+        }
+
         public PersonVO FindById(long id)
         {
             // Não vamos retornar um objeto igual ao que está no banco de dados. O que vamos fazer é
@@ -60,7 +100,7 @@ namespace RestWithASPNET5.Business.Implementations
         public PersonVO Disable(long id)
         {
             var personEntity = _repository.Disable(id);
-            return _converter.Parse(personEntity); 
+            return _converter.Parse(personEntity);
         }
 
         public void Delete(long id)
