@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace RestWithASPNET5.Business.Implementations
 {
-    public class FileBusiness : IFileBusiness
+    public class FileBusinessImplementation : IFileBusiness
     {
         private readonly string _basePath;
         private readonly IHttpContextAccessor _context;
 
-        public FileBusiness(IHttpContextAccessor context)
+        public FileBusinessImplementation(IHttpContextAccessor context)
         {
             _context = context;
             _basePath = Directory.GetCurrentDirectory() + "\\UploadDir\\";
@@ -21,7 +21,8 @@ namespace RestWithASPNET5.Business.Implementations
 
         public byte[] GetFile(string filename)
         {
-            throw new NotImplementedException();
+            var filePath = _basePath + filename;
+            return File.ReadAllBytes(filePath);
         }
 
         public async Task<FileDetailVO> SaveFileToDisk(IFormFile file)
@@ -55,9 +56,14 @@ namespace RestWithASPNET5.Business.Implementations
             return fileDetail;
         }
 
-        public Task<List<FileDetailVO>> SaveFilesToDisk(IList<IFormFile> file)
+        public async Task<List<FileDetailVO>> SaveFilesToDisk(IList<IFormFile> files)
         {
-            throw new NotImplementedException();
+            List<FileDetailVO> list = new List<FileDetailVO>();
+            foreach (var file in files)
+            {
+                list.Add(await SaveFileToDisk(file));
+            }
+            return list;
         }
     }
 }
