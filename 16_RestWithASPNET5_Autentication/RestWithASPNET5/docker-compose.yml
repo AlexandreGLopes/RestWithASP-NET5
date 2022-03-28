@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  restwithaspnet5:
+    image: ${DOCKER_REGISTRY-}restwithaspnet5
+    build:
+      context: .
+      dockerfile: RestWithASPNET5/Dockerfile
