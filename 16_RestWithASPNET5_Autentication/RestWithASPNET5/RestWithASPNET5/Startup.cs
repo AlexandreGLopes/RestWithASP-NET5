@@ -97,11 +97,12 @@ namespace RestWithASPNET5
 
             var connection = Configuration["MySQLConnection:MySQLConnectionString"];
             services.AddDbContext<MySQLContext>(options => options.UseMySql(connection));
-
-            if (Environment.IsDevelopment())
-            {
-                MigrateDatabase(connection);
-            }
+            
+            //DESABILITANDO O EVOLVE PARA NÃO DAR CONFLITO COM O DOCKER, POR ISSO USAMOS UM SCRIPT BASH PARA FAZER O TRABALHO DO EVOLVE COM AS MIGRATIONS
+            //if (Environment.IsDevelopment())
+            //{
+            //    MigrateDatabase(connection);
+            //}
 
             services.AddMvc(options =>
             {
